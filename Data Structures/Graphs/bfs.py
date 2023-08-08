@@ -1,0 +1,71 @@
+class Graph:
+
+    def __init__(self):
+        self.graph = {}
+
+    def add_node(self,node):
+        if node not in self.graph:
+            self.graph[node] = []
+
+    def add_edge(self,n1,n2):
+        if n1 in self.graph and n2 in self.graph:
+            self.graph[n1].append(n2)
+            self.graph[n2].append(n1)
+
+    def get_neighbours(self,node):
+        if node in self.graph:
+            return self.graph[node]
+        return []
+    
+    def __str__(self):
+        return str(self.graph)
+    
+    def bfs(self,node):
+        visited = []
+        queue = []
+        queue.append(node)
+        visited.append(node)
+
+        while len(queue) > 0:
+            m = queue.pop(0)
+            for neighbour in self.graph[m]:
+                if neighbour not in visited:
+                    queue.append(neighbour)
+                    visited.append(neighbour)
+        
+        return visited
+    
+    def bfs2(self,node):
+        visited = []
+        q = []
+        q.append(node)
+        while q:
+            m = q.pop(0)
+            visited.append(m)
+            for neighbour in self.graph[m]:
+                if neighbour not in visited:
+                    q.append(neighbour)
+        
+        return visited
+
+
+
+
+if __name__ == "__main__":
+    g = Graph()
+    g.add_node(5)
+    g.add_node(3)
+    g.add_node(7)
+    g.add_node(2)
+    g.add_node(4)
+    g.add_node(8)
+
+    g.add_edge(5,3)
+    g.add_edge(5,7)
+    g.add_edge(3,2)
+    g.add_edge(3,4)
+    g.add_edge(7,8)
+
+    # print(g)
+    print(g.bfs(5))
+    print(g.bfs2(5))

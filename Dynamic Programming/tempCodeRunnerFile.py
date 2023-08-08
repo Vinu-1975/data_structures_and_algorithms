@@ -1,0 +1,5 @@
+print(gridTraveler(1,1))
+print(gridTraveler(2,3))
+print(gridTraveler(3,2))
+print(gridTraveler(3,3))
+print(gridTraveler(18,18))
