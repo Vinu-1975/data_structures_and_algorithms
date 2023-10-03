@@ -1,0 +1,9 @@
+greedy:
+-> the optimal solution to the subproblem can lead to global/overall optimal solution.
+-> greedy approach alway schoose the steps which provide immediate benefit.
+-> Mainly used for optimization problem(to find max or min of something)
+
+-> The greedy approach has a few tradeoffs, which may make it suitable for optimization. One prominent reason is to achieve the most feasible solution immediately. In the activity selection problem
+
+-> Greedy may not always lead to optimal global solution.
+-> It does not consider the entire data. Does not consider future data and the choices
