@@ -1,0 +1,11 @@
+-> two sets are disjoint if they don't have any elements in common i.e insersection of two sets is NULL
+
+operations:
+->adding new sets to disjoint set
+->merging disjoin sets to single disjoint using UNION operation
+->finding representative of a disjoint using FIND operation
+->to check if two sets are disjoint
+
+uses:
+-> detect cycles in undirected graph
+-> used in kruskal's algorithm to detect cycles
