@@ -49,7 +49,9 @@ def kruskal(graph):
     mst = []
     for edge in edges:
         weight, node1, node2 = edge
+        #We check if its nodes node1 and node2 belong to the same set using the find operation. If they do (ds.find(node1) == ds.find(node2)), adding this edge would create a cycle, so it's skipped.
         if ds.find(node1) != ds.find(node2):
+            #If they belong to different sets, adding the edge won't create a cycle. Thus, the edge is added to the mst and the sets containing node1 and node2 are unioned together.
             mst.append(edge)
             ds.union(node1, node2)
 
