@@ -9,3 +9,7 @@ operations:
 uses:
 -> detect cycles in undirected graph
 -> used in kruskal's algorithm to detect cycles
+
+optimization:
+->path compression
+->union by rank
