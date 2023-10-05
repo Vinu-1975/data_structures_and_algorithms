@@ -58,7 +58,7 @@ def huffman_decode(encoded_message, root):
     return decoded_message
 
 # Test the Huffman encoding and decoding
-s = "this is an example for huffman encoding"
+s = "geeksforgeeks"
 root = build_huffman_tree(s)
 codes = build_huffman_codes(root)
 
