@@ -1,0 +1,17 @@
+The difference in solvability of the 0/1 knapsack and the fractional knapsack problems using a greedy approach lies in the nature of the items that can be taken.
+
+Fractional Knapsack:
+
+In the fractional knapsack problem, you are allowed to take a fraction of an item. This means if you have a constraint on the weight you can carry, and you encounter an item that's too heavy, you can still take part of it.
+
+Because of this fractional capability, you can always take the item with the best value-to-weight ratio without worry. If it's too big, just take a fraction of it. Therefore, the greedy choice (always pick the item with the best value-to-weight ratio first) is optimal.
+
+0/1 Knapsack:
+
+In the 0/1 knapsack problem, you have to make a binary decision: either you take an item, or you don't. This means that you can't simply choose the item with the best value-to-weight ratio and expect it to lead to an optimal solution, because taking that item might prevent you from taking a combination of other items that together would have given a better value.
+A simple example: Suppose you have a knapsack that can hold 10 units of weight. You have two items:
+An item that weighs 10 units and is worth $100.
+
+Two items that each weigh 5 units and are worth $60 each (total of $120 for 10 units).
+If you greedily choose based on value-to-weight ratio, you'd take the first item, as it has a ratio of 10 (100/10). But that's not optimal, because taking both of the smaller items gives you a total value of $120, which is better than $100.
+Given these characteristics, the greedy approach works perfectly for the fractional knapsack because you're never penalized for taking the item with the best ratio first. On the other hand, for the 0/1 knapsack, a greedy choice might lead to suboptimal solutions because it doesn't consider combinations of items that together might be more beneficial.
