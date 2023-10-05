@@ -1,33 +1,51 @@
 What is Huffman Coding?
+
 Huffman coding is a lossless data compression algorithm. The main idea is to minimize the average code length for a set of symbols based on their frequencies, thereby reducing the overall size of data when represented using these codes.
 
 How Does It Work?
+
 Frequency Table: Begin by calculating the frequency of each symbol (or character) in the data.
 Priority Queue: Create a priority queue (or a sorted list) with each symbol and its frequency. The queue is prioritized based on frequency.
+
 Tree Construction:
 While there's more than one node in the queue:
 Remove the two nodes of the lowest frequency.
 Create a new merged node with these two nodes as children and the combined frequency as its frequency.
 Insert the merged node back into the queue.
 This process creates a binary tree called the Huffman tree, with leaves being the symbols.
+
 Assign Codes: Traverse the Huffman tree to assign a binary code to each symbol. Moving left is usually represented by '0' and moving right by '1'. The code for a symbol is the path from the root to the symbol in the Huffman tree.
+
 Encode: Replace each symbol in the data with its Huffman code.
+
 Decode: To decode, start at the root of the Huffman tree and follow the path as per the Huffman code until you reach a leaf node (a symbol).
+
 Key Features of Huffman Coding:
+
 Lossless: The original data can be perfectly reconstructed from its Huffman-encoded form.
 Variable-length Codes: Unlike ASCII or Unicode which uses a fixed number of bits for each character, Huffman coding uses variable-length codes. More frequent symbols will have shorter codes, and less frequent symbols will have longer codes.
+
 Prefix-Free: No code is a prefix of another. This ensures that there's only one way to decode a Huffman encoded message.
 Why Use Huffman Coding?
+
 Compression: Huffman coding can significantly reduce the size of data, leading to faster transmission and reduced storage needs.
+
 Efficiency: It provides an optimal solution for character-based data compression when symbol frequencies are known.
+
 Limitations:
+
 Overhead: The Huffman tree (or table of Huffman codes) must be transmitted or stored along with the compressed data for decoding purposes.
+
 Static: Huffman coding is based on known symbol frequencies. If the data's character frequencies change, the coding may not remain optimal.
 Not Always Optimal: For some types of data, other compression algorithms might perform better.
+
 Applications:
+
 File Compression: Used in algorithms like DEFLATE, which is used in .zip files and in the PNG image format.
 Data Transmission: Reduces the amount of data sent over a network.
+
 Huffman vs. Arithmetic Coding:
+
 Arithmetic coding is another form of entropy encoding like Huffman coding. While Huffman coding assigns a code to each symbol, arithmetic coding represents an entire message as a single number between 0 and 1. Arithmetic coding can provide better compression rates than Huffman coding, but it's computationally more intensive.
 
 Conclusion:
