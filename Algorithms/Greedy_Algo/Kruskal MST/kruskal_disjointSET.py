@@ -45,7 +45,7 @@ def kruskal(graph):
 
     # Use disjoint-set to check for cycles
     ds = DisjointSet(graph.keys())
-
+    
     mst = []
     for edge in edges:
         weight, node1, node2 = edge

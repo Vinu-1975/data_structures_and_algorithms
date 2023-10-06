@@ -1,21 +1,22 @@
 import heapq
 
-def prim(graph, start):
+def prim(graph, start):  # O(VlogV + ElogV)
     mst = []  # List to store edges of the Minimum Spanning Tree
     visited = set()  # Set to keep track of visited nodes
     pq = [(0, start, None)]  # Priority queue initialized with the start node
 
-    while pq:
-        cost, current, prev = heapq.heappop(pq)  # Pop the edge with the smallest weight
+    while pq: # O(V)
+        cost, current, prev = heapq.heappop(pq)  # Pop the edge with the smallest weight   O(logV)
         if current in visited:
             continue
         visited.add(current)
         if prev is not None:
             mst.append((prev, current, cost))
 
-        for neighbor, weight in graph[current]:
+        for neighbor, weight in graph[current]:# O(E)
             if neighbor not in visited:
-                heapq.heappush(pq, (weight, neighbor, current))
+
+                heapq.heappush(pq, (weight, neighbor, current))  # O(logV)
 
     return mst
 
