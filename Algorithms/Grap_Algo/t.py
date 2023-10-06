@@ -1,57 +1,28 @@
-from collections import defaultdict
+def bellman_ford(graph,source):
+    distance = {vertex:float('inf') for vertex in graph}
+    distance[source] = 0
 
-class Solution:
-    def __init__(self):
-        self.stack = []
-        self.vis = []
-
-    def dfs(self,node,adj):
-        self.vis[node] = True
-        for i in adj[node]:
-            if not self.vis[i]:
-                self.dfs(i,adj)
-        self.stack.append(node)
+    for i in range(len(graph) - 1):
+        for vertex in graph:
+            for neighbor,weight in graph[vertex]:
+                if distance[vertex] != float('inf') and distance[vertex] + weight < distance[neighbor]:
+                    distance[neighbor] = distance[vertex] + weight
     
-    def dfs_reverse(self,node,adjT):
-        self.vis[node] = True
-        for i in adjT[node]:
-            if not self.vis[i]:
-                self.dfs_reverse(i,adjT)
+    for vertex in graph:
+        for neighbor,weight in graph[vertex]:
+            if distance[vertex]!=float('inf') and distance[vertex] + weight < distance[neighbor]:
+                print("NEgative cycle found")
+                return None
+            
+    return distance
 
-    def kosaraju(self,V,adj):
-        self.vis = [False] * V
 
-        for i in range(V):
-            if not self.vis[i]:
-                self.dfs(i,adj)
+graph = {
+    'A': [('B', -1), ('C', 4)],
+    'B': [('C', 3), ('D', 2), ('E', 2)],
+    'C': [],
+    'D': [('B', 1), ('C', 5)],
+    'E': [('D', -3)]
+}
 
-        adjT = defaultdict(list)
-        for i in range(V):
-            self.vis[i] = False
-            for it in adj[i]:
-                adjT[it].append(i)
-        
-        scc = 0
-        while self.stack:
-            node = self.stack.pop()
-            if not self.vis[node]:
-                scc+=1
-                self.dfs_reverse(node,adjT)
-        return scc
-    
-
-n = 5
-edges = [
-    (1, 0), (0, 2),
-    (2, 1), (0, 3),
-    (3, 4)
-]
-
-adj = defaultdict(list)
-for edge in edges:
-    adj[edge[0]].append(edge[1])
-
-obj = Solution()
-print(adj)
-ans = obj.kosaraju(n, adj)
-print(f"The number of strongly connected components is: {ans}")
+print(bellman_ford(graph, 'A'))
