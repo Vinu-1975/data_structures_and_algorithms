@@ -36,22 +36,22 @@ class DisjointSet:
 def kruskal(graph):
     # Create a list of all edges in the graph
     edges = []
-    for node, neighbors in graph.items():
+    for node, neighbors in graph.items():  #* O(V+E)
         for neighbor, weight in neighbors:
             edges.append((weight, node, neighbor))
 
     # Sort edges by weight
-    edges.sort()
+    edges.sort()  # * O(ElogE)
 
     # Use disjoint-set to check for cycles
     ds = DisjointSet(graph.keys())
-    
+
     mst = []
-    for edge in edges:
+    for edge in edges:  #* O(E)
         weight, node1, node2 = edge
-        #We check if its nodes node1 and node2 belong to the same set using the find operation. If they do (ds.find(node1) == ds.find(node2)), adding this edge would create a cycle, so it's skipped.
+        # We check if its nodes node1 and node2 belong to the same set using the find operation. If they do (ds.find(node1) == ds.find(node2)), adding this edge would create a cycle, so it's skipped.
         if ds.find(node1) != ds.find(node2):
-            #If they belong to different sets, adding the edge won't create a cycle. Thus, the edge is added to the mst and the sets containing node1 and node2 are unioned together.
+            # If they belong to different sets, adding the edge won't create a cycle. Thus, the edge is added to the mst and the sets containing node1 and node2 are unioned together.
             mst.append(edge)
             ds.union(node1, node2)
 
