@@ -6,6 +6,7 @@ def bubble_sort(a):
             if(a[j]>a[j+1]):
                 a[j],a[j+1] = a[j+1],a[j]
                 swapped = True
+        print(i,a,sep = " ")
         if(swapped == False):
             break
 

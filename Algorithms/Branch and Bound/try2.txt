@@ -1,0 +1,630 @@
+### Backtracking - N Queen
+
+
+def is_safe(board, row, col, n):
+    # Check if there is a queen in the same row on the left
+    for i in range(col):
+        if board[row][i] == 1:
+            return False
+
+    # Check if there is a queen in the upper diagonal on the left
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
+    # Check if there is a queen in the lower diagonal on the left
+    for i, j in zip(range(row, n, 1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
+    return True
+
+
+def solve_n_queens_util(board, col, n):
+    if col == n:
+        # All queens are placed, solution found
+        print_board(board)
+        return True
+
+    res = False
+    for i in range(n):
+        if is_safe(board, i, col, n):
+            # Place queen and recursively check for the next column
+            board[i][col] = 1
+
+            # Check if placing queen in the current position leads to a solution
+            res = solve_n_queens_util(board, col + 1, n) or res
+
+            # If placing queen in the current position doesn't lead to a solution, backtrack
+            board[i][col] = 0
+
+    return res
+
+
+def solve_n_queens(n):
+    # Initialize the chessboard
+    board = [[0 for _ in range(n)] for _ in range(n)]
+
+    # Start with the first column
+    if not solve_n_queens_util(board, 0, n):
+        print("No solution exists.")
+
+
+def print_board(board):
+    for row in board:
+        print(" ".join("Q" if cell == 1 else "." for cell in row))
+    print()
+
+
+# Example: Solve the 8-Queens problem
+solve_n_queens(4)
+
+### ==============================================================================================
+
+### Backtracking - Map/Graph Colouring
+
+
+def is_safe(node, graph, color, c):
+    for neighbor in graph[node]:
+        if color[neighbor] == c:
+            return False
+    return True
+
+
+def graph_coloring_util(graph, m, color, node, n):
+    if node == n:
+        # All nodes are colored, solution found
+        print(color)
+        return True
+
+    for c in range(1, m + 1):
+        if is_safe(node, graph, color, c):
+            color[node] = c
+
+            # Recursively color the next node
+            if graph_coloring_util(graph, m, color, node + 1, n):
+                return True
+
+            # If coloring the next node doesn't lead to a solution, backtrack
+            color[node] = 0
+
+    return False
+
+
+def graph_coloring(graph, m):
+    n = len(graph)
+    color = [0] * n
+
+    if not graph_coloring_util(graph, m, color, 0, n):
+        print("No solution exists.")
+
+
+# Example: Solve the Map Coloring problem
+# Assume the graph is represented as an adjacency list
+graph = {0: [1, 2], 1: [0, 2, 3], 2: [0, 1, 3], 3: [1, 2]}
+
+# Assume 3 colors are available
+colors = 3
+
+graph_coloring(graph, colors)
+
+### ===============================================================================================
+
+### Backtracking - Sub Set Sum
+
+# def is_subset_sum(arr, n, target_sum):
+#     # Base case: If the target sum is 0, an empty subset is found
+#     if target_sum == 0:
+#         return True
+#
+#     # Base case: If no elements are left or the target sum is negative, no subset is possible
+#     if n == 0 or target_sum < 0:
+#         return False
+#
+#     # If the last element is greater than the target sum, it can't be included in the subset
+#     if arr[n - 1] > target_sum:
+#         return is_subset_sum(arr, n - 1, target_sum)
+#
+#     # Recursively check if the target sum can be achieved by including or excluding the last element
+#     return is_subset_sum(arr, n - 1, target_sum) or is_subset_sum(arr, n - 1, target_sum - arr[n - 1])
+#
+#
+# def subset_sum(arr, target_sum):
+#     n = len(arr)
+#     if is_subset_sum(arr, n, target_sum):
+#         print("Subset with the given sum exists.")
+#     else:
+#         print("No subset with the given sum exists.")
+#
+#
+# # Example: Solve the Subset Sum problem
+# arr = [3, 34, 4, 12, 5, 2]
+# target_sum = 9
+#
+# subset_sum(arr, target_sum)
+
+
+def subset_sum_recursive(nums, target_sum, current_sum, index, selected):
+    # Base case: If the current sum equals the target sum, print the selected values
+    if current_sum == target_sum:
+        print("Subset with sum", target_sum, "found:", selected)
+        return
+
+    # Base case: If we have processed all elements or exceeded the target sum, backtrack
+    if index == len(nums) or current_sum > target_sum:
+        return
+
+    # Include the current element in the subset and recursively check
+    subset_sum_recursive(
+        nums, target_sum, current_sum + nums[index], index + 1, selected + [nums[index]]
+    )
+
+    # Exclude the current element from the subset and recursively check
+    subset_sum_recursive(nums, target_sum, current_sum, index + 1, selected)
+
+
+def subset_sum(nums, target_sum):
+    subset_sum_recursive(nums, target_sum, 0, 0, [])
+
+
+# Example usage:
+numbers = [1, 3, 5, 7, 9]
+target_sum = 16
+subset_sum(numbers, target_sum)
+
+### ===============================================================================================
+
+### Backtracking - 0/1 Knapsack
+
+
+def knapsack_recursive(values, weights, capacity, n):
+    # Base case: If the capacity is 0 or no items are left
+    if capacity == 0 or n == 0:
+        return 0
+
+    # If the weight of the nth item is more than the capacity, it can't be included
+    if weights[n - 1] > capacity:
+        return knapsack_recursive(values, weights, capacity, n - 1)
+
+    # Return the maximum of two cases:
+    # 1. nth item included
+    # 2. nth item not included
+    return max(
+        values[n - 1]
+        + knapsack_recursive(values, weights, capacity - weights[n - 1], n - 1),
+        knapsack_recursive(values, weights, capacity, n - 1),
+    )
+
+
+def knapsack(values, weights, capacity):
+    n = len(values)
+    return knapsack_recursive(values, weights, capacity, n)
+
+
+# Example: Solve the 0/1 Knapsack Problem
+values = [60, 100, 120]
+weights = [10, 20, 30]
+capacity = 50
+
+max_value = knapsack(values, weights, capacity)
+print("Maximum value:", max_value)
+
+
+### ===============================================================================================
+### ===============================================================================================
+### ===============================================================================================
+
+
+# Job sequencing with deadline
+from queue import PriorityQueue
+
+
+class Job:
+    def init(self, job_id, deadline, penalty):
+        self.job_id = job_id
+        self.deadline = deadline
+        self.penalty = penalty
+
+    def lt(self, other):
+        return self.penalty > other.penalty
+
+
+def job_sequencing_with_deadlines(jobs, max_deadline):
+    job_queue = PriorityQueue()
+    for job in jobs:
+        job_queue.put(job)
+
+    job_sequence = [-1] * max_deadline
+
+    while not job_queue.empty():
+        job = job_queue.get()
+        for d in range(job.deadline - 1, -1, -1):
+            if job_sequence[d] == -1:
+                job_sequence[d] = job.job_id
+                break
+
+    return job_sequence
+
+
+jobs = [
+    Job("a", 2, 100),
+    Job("b", 1, 19),
+    Job("c", 2, 27),
+    Job("d", 1, 25),
+    Job("e", 3, 15),
+]
+max_deadline = max(job.deadline for job in jobs)
+scheduled_jobs = job_sequencing_with_deadlines(jobs, max_deadline)
+print("Job sequence:", scheduled_jobs)
+
+### ===============================================================================================
+
+# job assignment
+import numpy as np
+
+
+def cost(matrix, assignment):
+    total_cost = 0
+    for i, j in enumerate(assignment):
+        total_cost += matrix[i, j]
+    return total_cost
+
+
+def bound(matrix, assignment):
+    total_cost = cost(matrix, assignment)
+    for i in range(len(assignment), matrix.shape[0]):
+        min_cost = np.min(matrix[i, np.setdiff1d(range(matrix.shape[1]), assignment)])
+        total_cost += min_cost
+    return total_cost
+
+
+def branch_and_bound(matrix):
+    best_cost = float("inf")
+    best_assignment = None
+    n = matrix.shape[0]
+    stack = [(0, [])]
+    while stack:
+        level, assignment = stack.pop()
+        if level == n:
+            current_cost = cost(matrix, assignment)
+            if current_cost < best_cost:
+                best_cost = current_cost
+                best_assignment = assignment
+        else:
+            for j in range(n):
+                if j not in assignment:
+                    new_assignment = assignment + [j]
+                    current_bound = bound(matrix, new_assignment)
+                    if current_bound < best_cost:
+                        stack.append((level + 1, new_assignment))
+    return assignment
+
+
+matrix = np.array([[11, 4, 9, 10], [8, 6, 5, 9], [7, 10, 3, 10], [9, 8, 11, 6]])
+assignment = branch_and_bound(matrix)
+print("Optimal Assignment:", assignment)
+print("Optimal Cost:", cost(matrix, assignment))
+
+### ===============================================================================================
+
+# kanpsack
+import heapq
+
+
+class Node:
+    def init(self, level, value, weight, bound):
+        self.level = level
+        self.value = value
+        self.weight = weight
+        self.bound = bound
+
+    def lt(self, other):
+        return self.bound > other.bound  # Max heap based on bound
+
+
+def bound(node, n, W, items):
+    if node.weight >= W:
+        return 0
+    value_bound = node.value
+    j = node.level + 1
+    totweight = node.weight
+    while j < n and totweight + items[j][1] <= W:
+        totweight += items[j][1]
+        value_bound += items[j][0]
+        j += 1
+    if j < n:
+        value_bound += (W - totweight) * items[j][0] / items[j][1]
+    return value_bound
+
+
+def knapsack(items, W):
+    items.sort(
+        key=lambda x: x[0] / x[1], reverse=True
+    )  # Sort based on value/weight ratio
+    n = len(items)
+    queue = []
+    heapq.heappush(queue, Node(-1, 0, 0, 0.0))
+    max_value = 0
+    while queue:
+        current = heapq.heappop(queue)
+        if current.level == n - 1:
+            continue
+        next_level = current.level + 1
+
+        # Branch including the next item
+        next_weight = current.weight + items[next_level][1]
+        next_value = current.value + items[next_level][0]
+
+        if next_weight <= W and next_value > max_value:
+            max_value = next_value
+
+        next_bound = bound(current, n, W, items)
+
+        if next_bound > max_value:
+            heapq.heappush(queue, Node(next_level, next_value, next_weight, next_bound))
+
+        # Branch excluding the next item
+        next_bound = bound(
+            Node(current.level, current.value, current.weight, 0), n, W, items
+        )
+        if next_bound > max_value:
+            heapq.heappush(
+                queue, Node(next_level, current.value, current.weight, next_bound)
+            )
+    return max_value
+
+
+# Example usage
+items = [(60, 10), (100, 20), (120, 30)]  # Each tuple is (value, weight)
+W = 50  # Maximum weight capacity
+print("Maximum value:", knapsack(items, W))
+
+### ===============================================================================================
+
+# Travelling salesman problem
+import heapq
+
+
+def calculate_lower_bound(matrix, path):
+    remaining_cities = [i for i in range(len(matrix)) if i not in path]
+    if not remaining_cities:
+        return 0  # All cities are in the path
+    lower_bound = sum(min(matrix[path[i]]) for i in range(len(path) - 1))
+    lower_bound += min(matrix[path[-1]][city] for city in remaining_cities)
+    return lower_bound
+
+
+def branch_and_bound_tsp(distance_matrix):
+    # Priority queue for the nodes to explore
+    queue = []
+    heapq.heappush(queue, (0, [0]))  # Starting with the first city
+    best_cost = float("inf")
+    best_path = []
+    while queue:
+        cost, path = heapq.heappop(queue)
+        if len(path) == len(distance_matrix) and cost < best_cost:
+            best_cost = cost
+            best_path = path
+            continue
+        for next_city in range(len(distance_matrix)):
+            if next_city not in path:
+                new_path = path + [next_city]
+                new_cost = cost + distance_matrix[path[-1]][next_city]
+                if new_cost < best_cost:
+                    lower_bound = calculate_lower_bound(distance_matrix, new_path)
+                    if lower_bound < best_cost:
+                        heapq.heappush(queue, (new_cost, new_path))
+    return best_path, best_cost
+
+
+# Example usage
+distance_matrix = [
+    [0, 20, 30, 10, 11],
+    [15, 0, 16, 4, 2],
+    [3, 5, 0, 2, 4],
+    [14, 6, 18, 0, 3],
+    [16, 4, 7, 16, 0],
+]
+path, cost = branch_and_bound_tsp(distance_matrix)
+print("Path:", path)
+print("Cost:", cost)
+
+### ===============================================================================================
+
+# N Queens
+N = 8
+
+
+def printSolution(board):
+    for row in board:
+        print(" ".join(map(str, row)))
+    print()
+
+
+def isSafe(
+    row, col, slashCode, backslashCode, rowLookup, slashCodeLookup, backslashCodeLookup
+):
+    return not (
+        slashCodeLookup[slashCode[row][col]]
+        or backslashCodeLookup[backslashCode[row][col]]
+        or rowLookup[row]
+    )
+
+
+def solveNQueensUtil(
+    board,
+    col,
+    slashCode,
+    backslashCode,
+    rowLookup,
+    slashCodeLookup,
+    backslashCodeLookup,
+):
+    if col >= N:
+        return True
+
+    for i in range(N):
+        if isSafe(
+            i,
+            col,
+            slashCode,
+            backslashCode,
+            rowLookup,
+            slashCodeLookup,
+            backslashCodeLookup,
+        ):
+            board[i][col] = 1
+            rowLookup[i] = slashCodeLookup[slashCode[i][col]] = backslashCodeLookup[
+                backslashCode[i][col]
+            ] = True
+
+            if solveNQueensUtil(
+                board,
+                col + 1,
+                slashCode,
+                backslashCode,
+                rowLookup,
+                slashCodeLookup,
+                backslashCodeLookup,
+            ):
+                return True
+
+            # Backtrack
+            board[i][col] = 0
+            rowLookup[i] = slashCodeLookup[slashCode[i][col]] = backslashCodeLookup[
+                backslashCode[i][col]
+            ] = False
+
+    return False
+
+
+def solveNQueens():
+    board = [[0] * N for _ in range(N)]
+    slashCode = [[i + j for j in range(N)] for i in range(N)]
+    backslashCode = [[i - j + N - 1 for j in range(N)] for i in range(N)]
+    rowLookup = [False] * N
+    slashCodeLookup = [False] * (2 * N - 1)
+    backslashCodeLookup = [False] * (2 * N - 1)
+
+    if not solveNQueensUtil(
+        board,
+        0,
+        slashCode,
+        backslashCode,
+        rowLookup,
+        slashCodeLookup,
+        backslashCodeLookup,
+    ):
+        print("Solution does not exist")
+        return False
+
+    printSolution(board)
+    return True
+
+
+# Driver Code
+solveNQueens()
+
+from heapq import heappush, heappop
+import copy
+
+### ===============================================================================================
+
+# Puzzle
+n = 3
+row = [1, 0, -1, 0]
+col = [0, -1, 0, 1]
+
+
+class PriorityQueue:
+    def init(self):
+        self.heap = []
+
+    def push(self, item):
+        heappush(self.heap, item)
+
+    def pop(self):
+        return heappop(self.heap)
+
+    def empty(self):
+        return not self.heap
+
+
+class Node:
+    def init(self, parent, mat, empty_tile_pos, cost, level):
+        self.parent = parent
+        self.mat = mat
+        self.empty_tile_pos = empty_tile_pos
+        self.cost = cost
+        self.level = level
+
+    def lt(self, other):
+        return self.cost < other.cost
+
+
+def calculateCost(mat, final):
+    return sum(mat[i][j] != final[i][j] for i in range(n) for j in range(n))
+
+
+def newNode(mat, empty_tile_pos, new_empty_tile_pos, level, parent, final):
+    new_mat = copy.deepcopy(mat)
+    x1, y1 = empty_tile_pos
+    x2, y2 = new_empty_tile_pos
+    new_mat[x1][y1], new_mat[x2][y2] = new_mat[x2][y2], new_mat[x1][y1]
+    cost = calculateCost(new_mat, final)
+    return Node(parent, new_mat, new_empty_tile_pos, cost, level)
+
+
+def printMatrix(mat):
+    for row in mat:
+        print(" ".join(map(str, row)))
+    print()
+
+
+def isSafe(x, y):
+    return 0 <= x < n and 0 <= y < n
+
+
+def printPath(root):
+    if root is None:
+        return
+    printPath(root.parent)
+    printMatrix(root.mat)
+
+
+def solve(initial, empty_tile_pos, final):
+    pq = PriorityQueue()
+    cost = calculateCost(initial, final)
+    root = Node(None, initial, empty_tile_pos, cost, 0)
+    pq.push(root)
+
+    while not pq.empty():
+        minimum = pq.pop()
+
+        if minimum.cost == 0:
+            printPath(minimum)
+            return
+
+        for i in range(4):
+            new_tile_pos = [
+                minimum.empty_tile_pos[0] + row[i],
+                minimum.empty_tile_pos[1] + col[i],
+            ]
+            if isSafe(*new_tile_pos):
+                child = newNode(
+                    minimum.mat,
+                    minimum.empty_tile_pos,
+                    new_tile_pos,
+                    minimum.level + 1,
+                    minimum,
+                    final,
+                )
+                pq.push(child)
+
+
+# Driver Code
+initial = [[1, 2, 3], [5, 6, 0], [7, 8, 4]]
+final = [[1, 2, 3], [5, 8, 6], [0, 7, 4]]
+empty_tile_pos = [1, 2]
+
+solve(initial, empty_tile_pos, final)
